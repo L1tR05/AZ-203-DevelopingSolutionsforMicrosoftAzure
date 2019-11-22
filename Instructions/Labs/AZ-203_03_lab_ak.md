@@ -2,7 +2,7 @@
 lab:
     title: 'Lab: Constructing a polyglot data solution'
     type: 'Answer Key'
-    module: 'Module 3: Develop for Azure Storage'
+    module: 'AZ-203T03-A: Develop for Azure Storage'
 ---
 
 # Lab: Constructing a polyglot data solution

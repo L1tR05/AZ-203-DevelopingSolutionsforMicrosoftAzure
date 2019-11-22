@@ -2,7 +2,7 @@
 lab:
     title: 'Lab: Access resource secrets securely across services'
     type: 'Answer Key'
-    module: 'Module 4: Implement Azure security'
+    module: 'AZ-203T04-A: Implement Azure security'
 ---
 
 # Lab: Access resource secrets securely across services
@@ -718,119 +718,9 @@ In this exercise, you securely used a service identity to read the value of a se
 
 1.  Observe the **Output** text box in the **Test** pane. You should now see the content of the **$/drop/records.json** blob stored in your **storage account**.
 
-#### Task 5: Generate a Shared Access Signature (SAS)
-
-1.  **Delete** the following lines of code:
-
-    ```
-    string content = await blob.DownloadTextAsync();
-
-    return new OkObjectResult(content);
-    ```
-
-1.  The **Run** method should now look like this:
-
-    ```
-    using System.Net;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Storage;
-    using Microsoft.Azure.Storage.Blob;
-    
-    public static async Task<IActionResult> Run(HttpRequest req)
-    {
-        string connectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
-        CloudStorageAccount account = CloudStorageAccount.Parse(connectionString);
-        CloudBlobClient blobClient = account.CreateCloudBlobClient();
-        CloudBlobContainer container = blobClient.GetContainerReference("drop");
-        CloudBlockBlob blob = container.GetBlockBlobReference("records.json");
-    }
-    ```
-
-1.  Add the following line of code to create a new instance of the **SharedAccessPolicy** class with the following settings:
-    
-      - **Permission**: Read
-    
-      - **Service Scope**: Blob
-    
-      - **Resource Types**: Object
-    
-      - **Expiration Time**: 2 Hours
-    
-      - **Protocol:** HTTPS Only
-
-    ```
-    SharedAccessAccountPolicy policy = new SharedAccessAccountPolicy()
-    {
-        Permissions = SharedAccessAccountPermissions.Read,
-        Services = SharedAccessAccountServices.Blob,
-        ResourceTypes = SharedAccessAccountResourceTypes.Object,
-        SharedAccessExpiryTime = DateTime.UtcNow.AddHours(2),
-        Protocols = SharedAccessProtocol.HttpsOnly
-    };
-    ```
-
-1.  Add the following line of code to use the **CloudStorageAccount.GetSharedAcessSignature** method to generate a new **Shared Access Signature (SAS) token** by using the provided policy, and then store the result in a string variable named *sasToken*:
-
-    ```
-    string sasToken = account.GetSharedAccessSignature(policy);
-    ```
-
-1.  Add the following line of code to concatenate the value of the **CloudBlockBlob.Uri** property and the *sasToken* string variable, and store the result in a new variable named *secureBlobUrl*:
-
-    ```
-    string secureBlobUrl = $"{blob.Uri}{sasToken}";
-    ```
-
-1.  Add the following line of code to return the value of the *secureBlobUrl* variable by using the **OkObjectResult** class constructor:
-
-    ```
-    return new OkObjectResult(secureBlobUrl);
-    ```
-
-1.  The **Run** method should now look like this:
-
-    ```
-    using System.Net;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Storage;
-    using Microsoft.Azure.Storage.Blob;
-
-    public static async Task<IActionResult> Run(HttpRequest req)
-    {
-        string connectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
-        CloudStorageAccount account = CloudStorageAccount.Parse(connectionString);
-        CloudBlobClient blobClient = account.CreateCloudBlobClient();
-        CloudBlobContainer container = blobClient.GetContainerReference("drop");
-        CloudBlockBlob blob = container.GetBlockBlobReference("records.json");
-        SharedAccessAccountPolicy policy = new SharedAccessAccountPolicy()
-        {
-            Permissions = SharedAccessAccountPermissions.Read,
-            Services = SharedAccessAccountServices.Blob,
-            ResourceTypes = SharedAccessAccountResourceTypes.Object,
-            SharedAccessExpiryTime = DateTime.UtcNow.AddHours(2),
-            Protocols = SharedAccessProtocol.HttpsOnly
-        };
-        string sasToken = account.GetSharedAccessSignature(policy);
-        string secureBlobUrl = $"{blob.Uri}{sasToken}";
-        return new OkObjectResult(secureBlobUrl);
-    }
-    ```
-
-1.  Select **Save and run** to save the script and perform a test execution of the function.
-
-1.  Observe the **Output** text box in the **Test** pane. You should now see a unique **Secure URL** that can be used to access the secured blob. Record this **URL** because you will need to use it in the next step of this lab.
-
-1. On the taskbar, right-select the **Microsoft Edge** icon and then select **New window**.
-
-1. In the new browser window, navigate to the **Secure** **URL** that you copied for the blob.
-
-1. You should now see the **JSON** contents of the blob. Close the browser window showing the **JSON** contents.
-
-1. Return to the browser window with the **Azure portal.**
-
 #### Review
 
-In this exercise, you used C\# code to access a storage account securely, download the contents of a blob, and then generate a SAS token that can be used to access the blob securely on another client.
+In this exercise, you used C\# code to access a Storage Account securely and then download the contents of a blob.
 
 ### Exercise 5: Clean up subscription 
 

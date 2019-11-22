@@ -2,7 +2,7 @@
 lab:
     title: 'Lab: Monitoring services deployed to Azure'
     type: 'Answer Key'
-    module: 'Module 5: Monitor, troubleshoot, and optimize Azure solutions '
+    module: 'AZ-203T05-A: Monitor, troubleshoot, and optimize Azure solutions '
 ---
 
 # Lab: Monitoring services deployed to Azure
